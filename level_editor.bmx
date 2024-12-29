@@ -146,7 +146,6 @@ Function Init()
 	Graphics DesktopWidth(), DesktopHeight(), DesktopDepth(), DesktopHertz()
 	AutoImageFlags MASKEDIMAGE
 	scale = Floor(DesktopHeight() / GAME_HEIGHT)
-	Print scale
 	
 	gfx = LoadImage("data/gfx.png")
 	tileset = LoadImage("data/tileset1.png")

@@ -58,6 +58,9 @@ Global level_pos_y:Int
 ' current selected tile-id
 Global selectedTileId:Int
 
+' current level
+Global level:Int
+
 ' display tilegrid in level-editor mode
 Global tileGridDisplay:Int = True
 
@@ -142,7 +145,7 @@ EndFunction
 ' # init level-editor														  #
 ' #############################################################################
 Function Init()
-	AppTitle = "AXG74 * Level-Editor"
+	AppTitle = "Shmup Level-Editor"
 	Graphics DesktopWidth(), DesktopHeight(), DesktopDepth(), DesktopHertz()
 	AutoImageFlags MASKEDIMAGE
 	scale = Floor(DesktopHeight() / GAME_HEIGHT)
@@ -155,6 +158,7 @@ Function Init()
 	
 	level_pos_x = 0
 	level_pos_y = 0
+	level = 0
 EndFunction
 
 ' #############################################################################
@@ -313,12 +317,39 @@ EndFunction
 ' # load level-data from file												  #
 ' #############################################################################
 Function LoadLevelData()
+	Local file:TStream = ReadFile("data/lvl/" + level + ".dat")
+	
+	Local w:Int = ReadInt(file)
+	Local h:Int = ReadInt(file)
+	
+	For Local y:Int = 0 To LEVELMAP_HEIGHT - 1
+		For Local x:Int = 0 To LEVELMAP_WIDTH - 1 
+			tileMapData_foreground[x, y] = ReadInt(file)
+		Next
+	Next
+	
+	CloseFile(file)
+	
+	level_pos_x = 0
+	level_pos_y = 0
 EndFunction
 
 ' #############################################################################
 ' # save level-data to file													  #
 ' #############################################################################
 Function SaveLevelData()
+	Local file:TStream = WriteFile("data/lvl/" + level + ".dat")
+	
+	WriteInt(file, LEVELMAP_WIDTH)
+	WriteInt(file, LEVELMAP_HEIGHT)
+	
+	For Local y:Int = 0 To LEVELMAP_HEIGHT - 1
+		For Local x:Int = 0 To LEVELMAP_WIDTH - 1
+			 WriteInt(file, tileMapData_foreground[x, y])
+		Next
+	Next
+	
+	CloseFile(file)
 EndFunction
 
 ' #############################################################################
@@ -330,12 +361,14 @@ Function DrawLevelEditorInformationText()
 	Local lvlX:Int = Int(tileMouseX / scale) + Int(level_pos_x * TILE_SIZE)
 	DrawText(" tile-x: " + lvlX, GAME_WIDTH * scale + 5, 30)
 	DrawText(" tile-y: " + Int(tileMouseY / scale), GAME_WIDTH * scale + 5, 52)
+
+	SetColor 0,255,0
+	DrawText("LEVEL: " + level, GAME_WIDTH * scale + 5, 200)
 	
 	SetColor 0,50,160
-	DrawText("AXG74 Level-Editor v" + VERSION, 2, GAME_HEIGHT * scale)
+	DrawText("Shmup Level-Editor v" + VERSION, 2, GAME_HEIGHT * scale)
 	SetColor 255,255,255
 
-	
 	' draw the current screen-number at left top corner
 	Local x:Int = Int(level_pos_x Mod TILE_COLS)
 

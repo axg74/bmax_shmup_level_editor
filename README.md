@@ -10,13 +10,14 @@ Level data will be loaded/saved in the folder "data/lvl" as binary data.
 Keyboard / Mouse shortcuts:
 
  * cursor-keys left/right 	 = scroll levelmap
- * key-c					 = clear level data
- * key-s					 = save level data
- * key-l					 = load level data
- * key-g					 = toggle tile-grid
- * key-escape			 	 = exit level-editor
- * left-mouse button		 = set tile (selection from the tile-selection screen)
- * right-mouse button	 	 = clear tile with id #0
+ * key-c					           = clear level data
+ * key-s					           = save level data
+ * key-l					           = load level data
+ * key-g					           = toggle tile-grid
+ * key-m                     = save screenshot (screenshot.png)
+ * key-escape			 	         = exit level-editor
+ * left-mouse button		     = set tile (selection from the tile-selection screen)
+ * right-mouse button	 	     = clear tile with id #0
  * middle-mouse button	  	 = open tile-selection screen (left-mouse-button for selecting a tile for editing)
  
  amiga graphics mode for the game:
@@ -29,7 +30,16 @@ Keyboard / Mouse shortcuts:
    
  * player sprite and player-shot's as amiga-hardware sprites (another 16 color palette)
 
- 
+## files
+
+iff_loader.bmx
+
+* loads Amiga DPaint4 IFF-files up to 32 colors in BlitzMAX on Windows. Returns an TImage-Object.
+
+level_editor.bmx
+
+* The level-editor for the game.
+
  todo's:
  =======
   * set player-ship start-position

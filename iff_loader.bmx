@@ -190,51 +190,44 @@ Type TDPaint4
 	Function CreatePixmapFromIffData:TImage()
 		Local pixMap:TPixmap
 		Local imgPic:TImage 
-		
+		Local bytesPerRow:Int = picWidth / 8
+
 		imgPic = CreateImage(picWidth, picHeight)
 		pixMap = LockImage(imgPic)
 		ClearPixels(pixMap)
-			
-		Local offset:Int = 0	
-		Local amigaByteBitplane1:Byte = 0
-		Local amigaByteBitplane2:Byte = 0
-		Local amigaByteBitplane3:Byte = 0
-		Local amigaByteBitplane4:Byte = 0
-		Local amigaByteBitplane5:Byte = 0
-		
-		Local bytesPerRow:Int = picWidth / 8
-		
+						
 		For Local y:Int = 0 To picHeight - 1
-			For Local x:Int = 0 To bytesPerRow - 1
-				amigaByteBitplane1 = 0
-				amigaByteBitplane2 = 0
-				amigaByteBitplane3 = 0
-				amigaByteBitplane4 = 0
-				amigaByteBitplane5 = 0
+			For Local x:Int = 0 To bytesPerRow - 1			
+				Local offset:Int = 0
+				Local amigaByteBitplane1:Byte = 0
+				Local amigaByteBitplane2:Byte = 0
+				Local amigaByteBitplane3:Byte = 0
+				Local amigaByteBitplane4:Byte = 0
+				Local amigaByteBitplane5:Byte = 0
 				
 				Select picColorCount
 					Case 2
 						offset = (picWidth / 8)
-						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
+						amigaByteBitplane1 = amigaBitplaneData[x + (y * offset)]	
 					Case 4
 						offset = (picWidth / 8) * 2	
-						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
-						amigaByteBitplane2 = amigaBitplaneData[bytesPerRow + ((y * offset) + x)]
+						amigaByteBitplane1 = amigaBitplaneData[x + (y * offset)]	
+						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
 					Case 8
 						offset = (picWidth / 8) * 3
 						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
-						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
+						amigaByteBitplane2 = amigaBitplaneData[x +  bytesPerRow + (y * offset)]
 						amigaByteBitplane3 = amigaBitplaneData[x + (bytesPerRow * 2) + (y * offset)]		
 					Case 16
 						offset = (picWidth / 8) * 4
 						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
-						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
+						amigaByteBitplane2 = amigaBitplaneData[x +  bytesPerRow + (y * offset)]
 						amigaByteBitplane3 = amigaBitplaneData[x + (bytesPerRow * 2) + (y * offset)]		
 						amigaByteBitplane4 = amigaBitplaneData[x + (bytesPerRow * 3) + (y * offset)]	
 					Case 32
 						offset = (picWidth / 8) * 5
 						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
-						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
+						amigaByteBitplane2 = amigaBitplaneData[x +  bytesPerRow + (y * offset)]
 						amigaByteBitplane3 = amigaBitplaneData[x + (bytesPerRow * 2) + (y * offset)]		
 						amigaByteBitplane4 = amigaBitplaneData[x + (bytesPerRow * 3) + (y * offset)]	
 						amigaByteBitplane5 = amigaBitplaneData[x + (bytesPerRow * 4) + (y * offset)]	

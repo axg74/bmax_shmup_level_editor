@@ -1,4 +1,3 @@
-' #############################################################################
 ' level-editor for 2d horizontal scrolling shoot-em-up-game (amiga version)
 ' code by AXG74
 ' in BlitzMAX for Windows
@@ -13,7 +12,6 @@
 ' left-mouse button		 = set tile (selection from the tile-selection screen)
 ' right-mouse button	 = clear tile with id #0
 ' middle-mouse button	 = open tile-selection screen (left-mouse-button for selecting a tile for editing)
-' #############################################################################
 
 SuperStrict
 
@@ -74,9 +72,7 @@ Init()
 MainLoop()
 End
 
-' #############################################################################
-' # level-editor´s main loop												  #
-' #############################################################################
+' level-editor´s main loop
 Function MainLoop()
 	Repeat
 		ClearAmigaScreen(50, 10, 0, GAME_WIDTH, LEVELMAP_HEIGHT * TILE_SIZE)
@@ -149,9 +145,7 @@ Function MainLoop()
 	Until KeyDown(KEY_ESCAPE)
 EndFunction
 
-' #############################################################################
-' # init level-editor														  #
-' #############################################################################
+' init level-editor
 Function Init()
 	AppTitle = "Shmup Level-Editor"
 	Graphics DesktopWidth(), DesktopHeight(), DesktopDepth(), DesktopHertz()
@@ -169,9 +163,7 @@ Function Init()
 	level = 0
 EndFunction
 
-' #############################################################################
-' # tile selection screen * user can select a tile for level-editing		  #
-' #############################################################################
+' tile selection screen * user can select a tile for level-editing
 Function TilesetSelection()
 	Repeat
 		ClearAmigaScreen(0, 70, 0, GAME_WIDTH, GAME_HEIGHT)
@@ -193,9 +185,7 @@ Function TilesetSelection()
 	Wend
 EndFunction
 
-' #############################################################################
-' # draw a tile-cursor at the current mouse-position						  #
-' #############################################################################
+' draw a tile-cursor at the current mouse-position
 Function DrawTileCursorAtMousePos()	
 	SetScale scale, scale
 	SetColor 0, 0, 220
@@ -205,9 +195,7 @@ Function DrawTileCursorAtMousePos()
 EndFunction
 
 
-' #############################################################################
-' # draws the current tile at the current mouse-position					  #
-' #############################################################################
+' draws the current tile at the current mouse-position
 Function DrawCurrentTileAtMousePosition()
 	Local xs:Int = tilePosTab[selectedTileId * 2 + 0]
 	Local ys:Int = tilePosTab[selectedTileId * 2 + 1]
@@ -216,9 +204,7 @@ Function DrawCurrentTileAtMousePosition()
 	SetScale 1, 1
 EndFunction
 
-' #############################################################################
-' # calculate the current mouse-position for the tile-editing				  #
-' #############################################################################
+' calculate the current mouse-position for the tile-editing
 Function CalcTileMousePos()
 	tileMouseX = (MouseX() / (TILE_SIZE * scale)) * (TILE_SIZE * scale)
 	tileMouseY = (MouseY() / (TILE_SIZE * scale)) * (TILE_SIZE * scale)	
@@ -226,16 +212,12 @@ Function CalcTileMousePos()
 	If tileMouseY > ((GAME_HEIGHT - TILE_SIZE) * scale) Then tileMouseY = ((GAME_HEIGHT - TILE_SIZE) * scale)
 EndFunction
 
-' #############################################################################
-' calculate current tile-id													  #
-' #############################################################################
+' calculate current tile-id
 Function CalcSelectedTileId()
 	selectedTileId = Floor((tileMouseX / scale) / TILE_SIZE) + Floor(((tileMouseY / scale) / TILE_SIZE) * TILE_COLS)
 EndFunction
 
-' #############################################################################
-' fill rectangle area with color											  #
-' #############################################################################
+' fill rectangle area with color
 Function ClearAmigaScreen(r:Int, g:Int, b:Int, width:Int, height:Int)
 	Cls
 	SetScale scale, scale
@@ -245,9 +227,7 @@ Function ClearAmigaScreen(r:Int, g:Int, b:Int, width:Int, height:Int)
 	SetScale 1, 1
 EndFunction
 
-' #############################################################################
-' # delete all tilemap level data											  #
-' #############################################################################
+' delete all tilemap level data
 Function ClearLevelData()
 	For Local y:Int = 0 To LEVELMAP_HEIGHT- 1
 		For Local x:Int = 0 To LEVELMAP_WIDTH - 1
@@ -256,9 +236,7 @@ Function ClearLevelData()
 	Next	
 EndFunction
 
-' #############################################################################
-' # calculate for each tile the x/y-position within the tileset				  #
-' #############################################################################
+' calculate for each tile the x/y-position within the tileset
 Function CalcTilePosTab()
 	Local pos:Int = 0
 	
@@ -271,26 +249,20 @@ Function CalcTilePosTab()
 	Next
 EndFunction
 
-' #############################################################################
-' # set a tile at the current mouse-position								  #
-' #############################################################################
+' set a tile at the current mouse-position
 Function SetTile_Foreground(tileId:Int)
 	CalcTilePosition()
 	If tileY > LEVELMAP_HEIGHT - 1 Then Return	
 	tileMapData_foreground[tileX, tileY] = tileId
 EndFunction
 
-' #############################################################################
-' # calculate the tile-position within the level-map						  #
-' #############################################################################
+' calculate the tile-position within the level-map
 Function CalcTilePosition()
 	tileX = ((tileMouseX / scale) / TILE_SIZE) + Int(level_pos_x)
 	tileY = (tileMouseY / scale) / TILE_SIZE
 EndFunction
 
-' #############################################################################
-' # draw the tilemap to the screen											  #
-' #############################################################################
+' draw the tilemap to the screen
 Function DrawTilemap()
 	Local tileId:Int = 0
 
@@ -321,9 +293,7 @@ Function DrawTilemap()
 	SetScale 1, 1
 EndFunction
 
-' #############################################################################
-' # load level-data from file												  #
-' #############################################################################
+' load level-data from file
 Function LoadLevelData()
 	Local file:TStream = ReadFile("data/lvl/" + level + ".dat")
 	
@@ -342,9 +312,7 @@ Function LoadLevelData()
 	level_pos_y = 0
 EndFunction
 
-' #############################################################################
-' # save level-data to file													  #
-' #############################################################################
+' save level-data to file
 Function SaveLevelData()
 	Local file:TStream = WriteFile("data/lvl/" + level + ".dat")
 	
@@ -360,9 +328,7 @@ Function SaveLevelData()
 	CloseFile(file)
 EndFunction
 
-' #############################################################################
-' # draw information text for the level-editor   							  #
-' #############################################################################
+' draw information text for the level-editor
 Function DrawLevelEditorInformationText()
 	SetScale 2,2
 	DrawText("level-x: " + Int(level_pos_x * TILE_SIZE), GAME_WIDTH * scale + 5, 5)

@@ -7,20 +7,28 @@
 SuperStrict
 
 Type TDPaint4
+	' picture width in pixel
 	Global picWidth:Int
+	
+	' picture height in pixel
 	Global picHeight:Int
+	
+	' amount of colors (2, 4, 8, 16, 32)
 	Global picColorCount:Int
+	
+	' amount of bitplanes (1 - 5)
 	Global picBitplanes:Int
 	
-	' Amiga color palette 32 colors
+	' Amiga color palette 32 colors in Amiga-format
 	Global amigaColorPalette:Int[32]
 	
-	' PC color palette
+	' PC color palette (red, green, blue)
 	Global pcColorPalette:Int[32 * 3]
 	
 	' Amiga bitplane data
 	Global amigaBitplaneData:Byte[40 * 256 * 5]
 
+	' loads an Amiga IFF-File (tested with DPaint4) with max. 5 bitplanes (32 colors) and returns the rendered image, IFF-data must be compressed
 	Function Load:TImage(filename:String)
 		Local pos:Int = 0
 		Local compression:Int = 0
@@ -36,13 +44,8 @@ Type TDPaint4
 		Local byt3:Byte = PeekByte(iffData, 2)
 		Local byt4:Byte = PeekByte(iffData, 3)
 		Local chunk:String = Chr(byt1) + Chr(byt2) + Chr(byt3) + Chr(byt4)
-			
-		For Local i:Int = 0 To Len(amigaBitplaneData) - 1
-			amigaBitplaneData[i] = 0
-		Next
-		
+					
 		If chunk = "FORM" Then
-			pos = 0			
 			Repeat
 				byt1 = PeekByte(iffData, pos + 0)
 				byt2 = PeekByte(iffData, pos + 1)
@@ -71,7 +74,7 @@ Type TDPaint4
 					picBitplanes = PeekByte(iffData, pos + 7)
 					compression = PeekByte(iffData, pos + 9)
 				Else
-					Notify("no valid IFF-file")
+					Notify("could not found BMHD-chunk!")
 					Return Null
 				EndIf
 				
@@ -90,8 +93,7 @@ Type TDPaint4
 					picColorCount = PeekShort(iffData, pos) / 3
 					pos:+1
 			
-					For Local i:Int = 0 To picColorCount - 1
-					
+					For Local i:Int = 0 To picColorCount - 1					
 						' generate AMIGA color palette
 						Local red:Int = PeekByte(iffData, pos + 0) Shr 4
 						Local green:Int = PeekByte(iffData, pos + 1) Shr 4
@@ -135,6 +137,9 @@ Type TDPaint4
 					Local chunkLength:Int = (PeekByte(iffData, pos) Shl 8) + PeekByte(iffData, pos+1)
 					pos:+2
 					
+					amigaBitplaneData = New Byte[(picWidth / 8) * picHeight * picBitplanes]
+					Print(Len(amigaBitplaneData))
+
 					' decompress data "ByteRun1 Encoding"
 					If compression Then
 						Local destPos:Int = 0
@@ -167,11 +172,11 @@ Type TDPaint4
 						Next
 					EndIf
 				Else
-					Notify("could not found BODY-chunk!")
+					Notify("can not load uncompressed IFF-Files!")
 					Return Null
 				EndIf
 			Else
-				Notify("could not found BMHD-chunk!")
+				Notify("could not found ILBM-chunk!")
 				Return Null
 			EndIf
 		Else 
@@ -197,8 +202,10 @@ Type TDPaint4
 		Local amigaByteBitplane4:Byte = 0
 		Local amigaByteBitplane5:Byte = 0
 		
+		Local bytesPerRow:Int = picWidth / 8
+		
 		For Local y:Int = 0 To picHeight - 1
-			For Local x:Int = 0 To picWidth / 8 - 1
+			For Local x:Int = 0 To bytesPerRow - 1
 				amigaByteBitplane1 = 0
 				amigaByteBitplane2 = 0
 				amigaByteBitplane3 = 0
@@ -208,29 +215,29 @@ Type TDPaint4
 				Select picColorCount
 					Case 2
 						offset = (picWidth / 8)
-						amigaByteBitplane1 = amigaBitplaneData[ 0  + ((y * offset) + x)]	
+						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
 					Case 4
 						offset = (picWidth / 8) * 2	
-						amigaByteBitplane1 = amigaBitplaneData[ 0  + ((y * offset) + x)]	
-						amigaByteBitplane2 = amigaBitplaneData[40  + ((y * offset) + x)]
+						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
+						amigaByteBitplane2 = amigaBitplaneData[bytesPerRow + ((y * offset) + x)]
 					Case 8
 						offset = (picWidth / 8) * 3
-						amigaByteBitplane1 = amigaBitplaneData[ 0  + ((y * offset) + x)]	
-						amigaByteBitplane2 = amigaBitplaneData[40  + ((y * offset) + x)]
-						amigaByteBitplane3 = amigaBitplaneData[80  + ((y * offset) + x)]		
+						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
+						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
+						amigaByteBitplane3 = amigaBitplaneData[x + (bytesPerRow * 2) + (y * offset)]		
 					Case 16
 						offset = (picWidth / 8) * 4
-						amigaByteBitplane1 = amigaBitplaneData[ 0  + ((y * offset) + x)]	
-						amigaByteBitplane2 = amigaBitplaneData[40  + ((y * offset) + x)]
-						amigaByteBitplane3 = amigaBitplaneData[80  + ((y * offset) + x)]		
-						amigaByteBitplane4 = amigaBitplaneData[120 + ((y * offset) + x)]	
+						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
+						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
+						amigaByteBitplane3 = amigaBitplaneData[x + (bytesPerRow * 2) + (y * offset)]		
+						amigaByteBitplane4 = amigaBitplaneData[x + (bytesPerRow * 3) + (y * offset)]	
 					Case 32
 						offset = (picWidth / 8) * 5
-						amigaByteBitplane1 = amigaBitplaneData[ 0  + ((y * offset) + x)]	
-						amigaByteBitplane2 = amigaBitplaneData[40  + ((y * offset) + x)]
-						amigaByteBitplane3 = amigaBitplaneData[80  + ((y * offset) + x)]		
-						amigaByteBitplane4 = amigaBitplaneData[120 + ((y * offset) + x)]	
-						amigaByteBitplane5 = amigaBitplaneData[160 + ((y * offset) + x)]	
+						amigaByteBitplane1 = amigaBitplaneData[(y * offset) + x]	
+						amigaByteBitplane2 = amigaBitplaneData[x + bytesPerRow + (y * offset)]
+						amigaByteBitplane3 = amigaBitplaneData[x + (bytesPerRow * 2) + (y * offset)]		
+						amigaByteBitplane4 = amigaBitplaneData[x + (bytesPerRow * 3) + (y * offset)]	
+						amigaByteBitplane5 = amigaBitplaneData[x + (bytesPerRow * 4) + (y * offset)]	
 				EndSelect
 									
 				' draw one byte (8 pixel)
@@ -245,9 +252,9 @@ Type TDPaint4
 					  				  (((amigaByteBitplane4 & bitPos) Shr shift) Shl 3) | ..
 									  (((amigaByteBitplane5 & bitPos) Shr shift) Shl 4)
 
-					Local red:Int = pcColorPalette[color * 3 + 0]
+					Local red:Int 	= pcColorPalette[color * 3 + 0]
 					Local green:Int = pcColorPalette[color * 3 + 1]
-					Local blue:Int = pcColorPalette[color * 3 + 2]
+					Local blue:Int 	= pcColorPalette[color * 3 + 2]
 	
 					WritePixel(pixMap, (x * 8) + pixelX, y, %11111111000000000000000000000000 | red Shl 16 | green Shl 8 | blue)
 					
@@ -261,16 +268,20 @@ Type TDPaint4
 	EndFunction
 EndType
 
+Global winScale:Int = 3
 AppTitle = "AMIGA DPAINT4-IFF loader"
-Graphics 1024, 800
+Graphics 320 * winScale, 256 * winScale
 AutoImageFlags MASKEDIMAGE
 
 Global img:TImage = TDPaint4.Load("data/test_32colors.iff")
-If img = Null Then End
+If img = Null Then
+	Notify("error while loading IFF-Picture!")
+	End
+EndIf
 
 Repeat
 	Cls
-	SetScale 3,3
+	SetScale winScale, winScale
 	DrawImage img, 0, 0
 	SetScale 1,1
 	Flip

@@ -1,14 +1,11 @@
-' #############################################################################
-' # Amiga IFF-File loader (original Amiga DPAINT4 IFF-Format)				  #
-' # code by AXG74 written in BlitzMAX (Windows)								  #
-' # ==========================================================================#
-' # IFF-Format details														  #
-' # https://wiki.multimedia.cx/index.php/IFF#ATAK_and_RLSE					  #
-' # https://www.fileformat.info/format/iff/egff.htm							  #
-' #############################################################################
+' Amiga IFF-File loader (original Amiga DPAINT4 IFF-Format)
+' code by AXG74 written in BlitzMAX (Windows)
+' IFF-Format details
+' https://wiki.multimedia.cx/index.php/IFF#ATAK_and_RLSE
+' https://www.fileformat.info/format/iff/egff.htm
 
 SuperStrict
-AppTitle="AMIGA DPAINT4-IFF loader"
+AppTitle = "AMIGA DPAINT4-IFF loader"
 
 Graphics 1024, 800
 AutoImageFlags MASKEDIMAGE
@@ -47,9 +44,7 @@ Repeat
 Until KeyDown(KEY_ESCAPE)
 End
 
-' #############################################################################
-' # create a pixmap from the loaded DPAINT4-Iff-Data						  #
-' #############################################################################
+' create a pixmap from the loaded DPAINT4-Iff-Data
 Function CreatePixmapFromIffData()
 	Local offset:Int = 0	
 
@@ -64,7 +59,6 @@ Function CreatePixmapFromIffData()
 	
 	For Local y:Int = 0 To picHeight - 1
 		For Local x:Int = 0 To picWidth / 8 - 1
-
 			amigaByteBitplane1 = 0
 			amigaByteBitplane2 = 0
 			amigaByteBitplane3 = 0
@@ -116,9 +110,7 @@ Function CreatePixmapFromIffData()
 	UnlockImage(imgPic)
 EndFunction
 
-' #############################################################################
-' # loads an AMIGA IFF-File (from DPAINT4)									  #
-' #############################################################################
+' loads an AMIGA IFF-File (from DPAINT4)
 Function LoadAmigaDpaint4IffFile(filename:String)
 	Local pos:Int = 0
 	Local compression:Int = 0
@@ -248,8 +240,7 @@ Function LoadAmigaDpaint4IffFile(filename:String)
 							bodyPos:+1	
 							i:+1
 						Else
-						
-						' uncompressed byte
+							' uncompressed byte
 							For Local k:Int = 0 To byt
 								amigaBitplaneData[destPos] = PeekByte(iffData, bodyPos)
 								destPos:+1

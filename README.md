@@ -34,7 +34,7 @@ Keyboard / Mouse shortcuts:
 
 iff_loader.bmx
 
-* loads Amiga DPaint4 IFF-files up to 32 colors in BlitzMAX on Windows. Returns an TImage-Object.
+* loads and renders an Amiga DPaint4 IFF-files up to 32 colors in BlitzMAX on Windows. Returns an TImage-Object.
 
 level_editor.bmx
 

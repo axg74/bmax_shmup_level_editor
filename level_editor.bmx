@@ -123,7 +123,7 @@ Function MainLoop()
 		If KeyHit(KEY_G) Then
 			tileGridDisplay = Not tileGridDisplay
 		EndIf
-		
+				
 		' scroll the level-map with cursor keys
 		If KeyDown(KEY_LEFT) Then
 			level_pos_x:-0.25
@@ -137,6 +137,14 @@ Function MainLoop()
 		
 		DrawLevelEditorInformationText()
 				
+		' save screenshot
+		If KeyHit(KEY_M) Then
+			Local imgScreen:TImage = CreateImage(DesktopWidth(), DesktopHeight(), 1, DYNAMICIMAGE|MASKEDIMAGE)
+			GrabImage imgScreen,0,0
+			SavePixmapPNG(imgScreen.pixmaps[0], "screenshot.png")
+			imgScreen = Null
+		EndIf
+		
 		Flip
 	Until KeyDown(KEY_ESCAPE)
 EndFunction

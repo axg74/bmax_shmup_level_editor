@@ -29,12 +29,6 @@ Global pixMap:TPixmap
 
 LoadAmigaDpaint4IffFile("data/test_16colors.iff")
 
-For Local i:Int = 0 To 3
-	Print("red  :"+pcColorPalette[i*3+0])
-	Print("green:"+pcColorPalette[i*3+1])
-	Print("blue :"+pcColorPalette[i*3+2])+Chr(10)
-Next
-
 Repeat
 	Cls
 	SetScale 3,3

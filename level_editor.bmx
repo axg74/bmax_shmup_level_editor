@@ -9,6 +9,7 @@
 ' key-l					 = load level data
 ' key-g					 = toggle tile-grid
 ' key-escape			 = exit level-editor
+' key-m					 = save screenshot (screenshot.png)
 ' left-mouse button		 = set tile (selection from the tile-selection screen)
 ' right-mouse button	 = clear tile with id #0
 ' middle-mouse button	 = open tile-selection screen (left-mouse-button for selecting a tile for editing)
@@ -331,13 +332,22 @@ EndFunction
 ' draw information text for the level-editor
 Function DrawLevelEditorInformationText()
 	SetScale 2,2
+	SetColor 200,50,30
 	DrawText("level-x: " + Int(level_pos_x * TILE_SIZE), GAME_WIDTH * scale + 5, 5)
-	Local lvlX:Int = Int(tileMouseX / scale) + Int(level_pos_x * TILE_SIZE)
+	Local lvlX:Int = Int(tileMouseX / scale) + (Floor(level_pos_x) * TILE_SIZE)
+	
+	SetColor 200,200,200
 	DrawText(" tile-x: " + lvlX, GAME_WIDTH * scale + 5, 30)
+	SetColor 130,130,130
 	DrawText(" tile-y: " + Int(tileMouseY / scale), GAME_WIDTH * scale + 5, 52)
 
+	SetColor 0,100,255
+	DrawText(" grid-x: " + Int((tileMouseX / scale) / TILE_SIZE), GAME_WIDTH * scale + 5, 74)
+	SetColor 0,70,225
+	DrawText(" grid-y: " + Int((tileMouseY / scale) / TILE_SIZE), GAME_WIDTH * scale + 5, 96)
+
 	SetColor 0,255,0
-	DrawText("LEVEL: " + level, GAME_WIDTH * scale + 5, 200)
+	DrawText("level: " + level, GAME_WIDTH * scale + 5, 200)
 	
 	SetColor 0,50,160
 	DrawText("Shmup Level-Editor v" + VERSION, 2, GAME_HEIGHT * scale)
@@ -361,8 +371,7 @@ Function DrawLevelEditorInformationText()
 
 		' bottom Left marker
 		DrawSubImageRect gfx, 0, (LEVELMAP_HEIGHT - 1) * TILE_SIZE * scale, 16, 16, 48,16, 16, 16
-	Else
-	
+	Else	
 		SetColor 0,255,0
 		SetAlpha 1.0
 		DrawText(Int(level_pos_x / TILE_COLS) + 2, 8 + (GAME_WIDTH - x * TILE_SIZE) * scale, 3)

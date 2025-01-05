@@ -346,8 +346,11 @@ Function DrawLevelEditorInformationText()
 	SetColor 0,70,225
 	DrawText(" grid-y: " + Int((tileMouseY / scale) / TILE_SIZE), GAME_WIDTH * scale + 5, 96)
 
+	SetColor 255,255,0
+	DrawText("screens: " + LEVELMAP_WIDTH / (GAME_WIDTH / TILE_SIZE) , GAME_WIDTH * scale + 5, 118)
+	
 	SetColor 0,255,0
-	DrawText("level: " + level, GAME_WIDTH * scale + 5, 200)
+	DrawText("  level: " + level, GAME_WIDTH * scale + 5, 140)
 	
 	SetColor 0,50,160
 	DrawText("Shmup Level-Editor v" + VERSION, 2, GAME_HEIGHT * scale)

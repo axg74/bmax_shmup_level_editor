@@ -16,6 +16,8 @@
 
 SuperStrict
 
+Include "TDPaint4.bmx"
+
 Const VERSION:String = "0.00"
 
 ' amiga game size
@@ -154,7 +156,8 @@ Function Init()
 	scale = Floor(DesktopHeight() / GAME_HEIGHT)
 	
 	gfx = LoadImage("data/gfx.png")
-	tileset = LoadImage("data/tileset1.png")
+	'tileset = LoadImage("data/tileset1.png")
+	tileset = TDPaint4.Load("data/tiles1.iff")
 	
 	CalcTilePosTab()
 	ClearLevelData()

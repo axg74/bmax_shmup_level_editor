@@ -143,29 +143,28 @@ Type TDPaint4
 					' decompress data "ByteRun1 Encoding"
 					If compression Then
 						Local destPos:Int = 0
-						Local bodyPos:Int = pos
 					
 						For Local i:Int = 0 To chunkLength - 1
-							Local byt:Byte = PeekByte(iffData, bodyPos)
-							bodyPos:+1												
+							Local byt:Byte = PeekByte(iffData, pos)
+							pos:+1												
 																															
 							' compressed byte							
 							If byt & %10000000 <> 0 Then				
 								Local count:Byte = ~byt+1
 		
 								For Local k:Int = 0 To count
-									amigaBitplaneData[destPos] = PeekByte(iffData, bodyPos)
+									amigaBitplaneData[destPos] = PeekByte(iffData, pos)
 									destPos:+1
 								Next
 								
-								bodyPos:+1	
+								pos:+1	
 								i:+1
 							Else
 								' uncompressed byte
 								For Local k:Int = 0 To byt
-									amigaBitplaneData[destPos] = PeekByte(iffData, bodyPos)
+									amigaBitplaneData[destPos] = PeekByte(iffData, pos)
 									destPos:+1
-									bodyPos:+1
+									pos:+1
 									i:+1
 								Next							
 							EndIf

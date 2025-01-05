@@ -1,4 +1,4 @@
-' level-editor for 2d horizontal scrolling shoot-em-up-game (amiga version)
+' level-editor prototype for 2d horizontal scrolling shoot-em-up-game (amiga version)
 ' code by AXG74
 ' in BlitzMAX for Windows
 '

@@ -138,7 +138,6 @@ Type TDPaint4
 					pos:+2
 					
 					amigaBitplaneData = New Byte[(picWidth / 8) * picHeight * picBitplanes]
-					Print(Len(amigaBitplaneData))
 
 					' decompress data "ByteRun1 Encoding"
 					If compression Then
